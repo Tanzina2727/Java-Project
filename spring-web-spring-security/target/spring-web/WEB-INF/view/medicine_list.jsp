@@ -50,7 +50,7 @@
                 <th>ID</th>
                 <th>Medicine Name</th>
                 <th>Price</th>
-                <th>Qantity</th>
+                <th>Quantity</th>
                 <th>Actions</th>
             </tr>
 

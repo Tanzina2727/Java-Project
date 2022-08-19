@@ -42,7 +42,7 @@
                class="add-button">
 
         <input type="button" value="Order History"
-               onclick="window.location.href='buyerorder'; return false;"
+               onclick="window.location.href='buyerorderhistory'; return false;"
                class="add-button">
 
         <input type="button" value="About Us"

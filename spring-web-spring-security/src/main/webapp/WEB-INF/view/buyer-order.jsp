@@ -46,45 +46,31 @@
                 <th>ID</th>
                 <th>Medicine Name</th>
                 <th>Price</th>
-                <th>Qantity</th>
-                <th>Actions</th>
+                <th>Max Limit Available</th>
+
 
             </tr>
 
             <c:forEach var="medicine" items="${medicines}">
             <tr>
-                <c:url var="addLink" value="/api/add">
-                    <c:param name="medsId" value="${medicine.id}"/>
-                </c:url>
-
                 <td> ${medicine.id} </td>
                 <td> ${medicine.medsname} </td>
                 <td> ${medicine.price} </td>
                 <td> ${medicine.quantity} </td>
 
-                <td>
-                    <a href="${addLink}">Add</a>
-                </td>
             </tr>
         </c:forEach>
         </table>
         <br> <br> <br>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Medicine Name</th>
-                <th>Price</th>
-                <th>Qantity</th>
-                <th>Total</th>
 
-            </tr>
-
-
-</table>
-        <br> <br> <br>
-        <input type="button" value="Go To Cart"
-               onclick="window.location.href='cart'; return false;"
+        <input type="button" value="Add to cart"
+               onclick="window.location.href='addCart'; return false;"
                class="add-button">
+        <br> <br>
+        <p>
+            <a href="${pageContext.request.contextPath}/api/two">Back to Homepage</a>
+        </p>
+
 
     </div>
 </div>

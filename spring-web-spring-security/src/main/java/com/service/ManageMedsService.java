@@ -9,6 +9,7 @@ public interface ManageMedsService {
 
     public List<Medicine> getAll();
 
+
     public void save(Medicine medicine);
 
     public Medicine get(int id);

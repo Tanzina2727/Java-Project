@@ -1,8 +1,10 @@
 package com.controller;
 
 import com.model.Buyer;
+import com.model.Cart;
 import com.model.Medicine;
 import com.service.BuyerService;
+import com.service.CartService;
 import com.service.ManageMedsService;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
@@ -21,10 +23,13 @@ public class BuyerHomeController {
     private final ManageMedsService manageMedsService;
     private final BuyerService buyerService;
 
-    public BuyerHomeController(ManageMedsService manageMedsService, BuyerService buyerService) {
+    private final CartService cartService;
+
+    public BuyerHomeController(ManageMedsService manageMedsService, BuyerService buyerService, CartService cartService) {
         this.manageMedsService = manageMedsService;
 
         this.buyerService = buyerService;
+        this.cartService = cartService;
     }
     @InitBinder
     public void initBinder(WebDataBinder webDataBinder) {
@@ -49,16 +54,6 @@ public class BuyerHomeController {
         return "buyer-order";
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public String medicineUpdateForm(@RequestParam("medsId") int id, Model model) {
-        Medicine medicine = manageMedsService.get(id);
-
-        model.addAttribute("medicine", medicine);
-        System.out.println("hiii");
-
-        return "buyer-order";
-    }
-
 
 
     @RequestMapping(value = "/createInfo", method = RequestMethod.GET)
@@ -80,7 +75,7 @@ public class BuyerHomeController {
     @RequestMapping("/showpersonal")
     public String personalInfoForm(Model model, @RequestParam(required = false) String sortKey) {
         List<Buyer> buyers = new ArrayList<>();
-        buyers = buyerService.();
+        buyers = buyerService.getAll();
         model.addAttribute("buyers", buyers);
         return "personal-account-info";
     }
@@ -100,9 +95,63 @@ public class BuyerHomeController {
         return "redirect:/api/showpersonal";
     }
 
+    @RequestMapping(value = "updatecart", method = RequestMethod.GET)
+    public String cartUpdateForm(@RequestParam("cartId") int cartId, Model model) {
+        Cart carts = cartService.get(cartId);
 
-    @RequestMapping(value = "cart", method=RequestMethod.GET)
-    public String cartForm(Model model) {
+        model.addAttribute("carts", carts);
+
+        return "update-cart";
+    }
+
+    @RequestMapping(value = "/updatecart", method = RequestMethod.POST)
+    public String updateCart(@ModelAttribute("carts") Cart cart) {
+        cartService.update(cart);
+        return "redirect:/api/addCart";
+    }
+    @RequestMapping(value = "/createCart", method = RequestMethod.GET)
+    public String createCart(Model model) {
+        Cart cart = new Cart();
+        model.addAttribute("cart", cart);
+        return "create-cart";
+    }
+
+    @RequestMapping(value = "/createCart", method = RequestMethod.POST)
+    public String createCartInfo(@Valid @ModelAttribute("cart") Cart cart, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "create-cart";
+        }
+        cartService.save(cart);
+        return "redirect:/api/addCart";
+    }
+    @RequestMapping("/addCart")
+    public String addCartForm(Model model, @RequestParam(required = false) String sortKey) {
+        List<Cart> carts = new ArrayList<>();
+        carts = cartService.getAll();
+        model.addAttribute("carts", carts);
         return "cart";
     }
+    @RequestMapping("/addMore")
+    public String addMoreForm(Model model, @RequestParam(required = false) String sortKey) {
+         List<Medicine> medicines = new ArrayList<>();
+        medicines = manageMedsService.getAll();
+        model.addAttribute("medicines", medicines);
+        return "buyer-order";
+    }
+
+    @RequestMapping("/purchase")
+    public String showCartForm(Model model, @RequestParam(required = false) String sortKey) {
+        List<Cart> carts = new ArrayList<>();
+        carts = cartService.getAll();
+        model.addAttribute("carts", carts);
+        return "buyer-order-history";
+    }
+
+    @RequestMapping("/deletecart")
+    public String deleteMeds(@RequestParam("cartId") int cartId) {
+        cartService.delete(cartId);
+        return "redirect:/api/addCart";
+    }
+
+
 }
